@@ -156,7 +156,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dashBoardCardView1"
-            android:layout_marginTop="20dp"
             app:cardBackgroundColor="#F3F1F1"
             app:cardCornerRadius="6dp"
             app:cardUseCompatPadding="true"
@@ -179,7 +178,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="200dp"
                     android:background="#F3F1F1"
                     android:text="Total Expense Tk."
                     android:id="@+id/dashBoardTotalExpenseTV"
