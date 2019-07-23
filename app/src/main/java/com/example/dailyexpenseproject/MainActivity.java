@@ -33,13 +33,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-
         bottomNavigationView = findViewById(R.id.bottom_nav_view);
-        //addExpenseFABtn = findViewById(R.id.addExpenseBtn);
     }
 
     private void configBottomNavView() {
-
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
@@ -51,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.nav_menu_dashboard:
                     replaceFragment(new dashboardFragment());
+                    setTitle("Home Dashboard");
                     Toast.makeText(MainActivity.this, "Dashboard", Toast.LENGTH_SHORT).show();
                     return true;
 
                 case R.id.nav_menu_Expenses:
                     replaceFragment(new expenseShowFragment());
+                    setTitle("Expense list");
                     Toast.makeText(MainActivity.this, "Your Expenses", Toast.LENGTH_SHORT).show();
                     return true;
             }
@@ -64,11 +63,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void replaceFragment(Fragment fragment){
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
-
     }
-
 }

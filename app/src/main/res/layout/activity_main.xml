@@ -22,6 +22,6 @@
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/bottom_nav_menu"
-        android:padding="5dp"/>
+        android:padding="10dp"/>
 
 </RelativeLayout>
