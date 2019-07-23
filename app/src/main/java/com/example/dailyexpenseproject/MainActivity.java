@@ -19,7 +19,6 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-    //private FloatingActionButton addExpenseFABtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +48,11 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_menu_dashboard:
                     replaceFragment(new dashboardFragment());
                     setTitle("Home Dashboard");
-                    Toast.makeText(MainActivity.this, "Dashboard", Toast.LENGTH_SHORT).show();
                     return true;
 
                 case R.id.nav_menu_Expenses:
                     replaceFragment(new expenseShowFragment());
                     setTitle("Expense list");
-                    Toast.makeText(MainActivity.this, "Your Expenses", Toast.LENGTH_SHORT).show();
                     return true;
             }
             return false;

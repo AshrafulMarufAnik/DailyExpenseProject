@@ -165,13 +165,30 @@
             app:cardUseCompatPadding="true"
             app:cardElevation="3dp">
 
-            <androidx.recyclerview.widget.RecyclerView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:id="@+id/expenseListRV">
+                android:orientation="vertical">
 
-            </androidx.recyclerview.widget.RecyclerView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/deep_blue"
+                    android:text="Expense History"
+                    android:textColor="#FFFFFF"
+                    android:padding="3dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:background="#F3F1F1"
+                    android:id="@+id/expenseListRV">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </LinearLayout>
+
 
         </androidx.cardview.widget.CardView>
 
@@ -181,7 +198,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
-            android:id="@+id/AddExpenseActivityBTN"
+            android:id="@+id/addExpenseActivityBTN"
             android:background="@color/deep_blue"
             android:src="@drawable/ic_expense_add_black_24dp"
             android:padding="10dp"/>

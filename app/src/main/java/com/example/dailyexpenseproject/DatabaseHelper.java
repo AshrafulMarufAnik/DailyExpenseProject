@@ -1,13 +1,14 @@
 package com.example.dailyexpenseproject;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static String DATABASE_NAME = "Expense.db";
-    public static String TABLE1_NAME = "expense";
+    public static String TABLE1_NAME = "Expense";
     public static String TABLE2_NAME = "";
     public static String table1_COL_id = "Id";
     public static String table2_COL_id = "Id";
@@ -34,15 +35,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public Cursor showAllData(){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(show_all_data_table1,null);
+
+        return cursor;
+    }
+
     public void insert() {
 
     }
 
-    public void update() {
+    public void update(int id) {
 
     }
 
-    public void delete(){
+    public void delete(int id){
 
     }
 }
