@@ -10,7 +10,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         android:background="#FFFFFF">
 
@@ -109,6 +108,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="11/05/19"
+                                android:id="@+id/fromDateSetTV"
                                 android:textAlignment="center"
                                 android:textStyle="normal"/>
 
@@ -140,6 +140,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="11/05/19"
+                                android:id="@+id/toDateSetTV"
                                 android:textAlignment="center"
                                 android:textStyle="normal"/>
 

@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     private DatabaseHelper databaseHelper;
-    private ArrayList<expense> expenseList;
+    private ArrayList<Expense> expenseList;
     private Context context;
 
-    public DataAdapter(DatabaseHelper databaseHelper, ArrayList<expense> expenseList, Context context) {
+    public DataAdapter(DatabaseHelper databaseHelper, ArrayList<Expense> expenseList, Context context) {
         this.databaseHelper = databaseHelper;
         this.expenseList = expenseList;
         this.context = context;
@@ -32,7 +32,13 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        expense currentExpense = expenseList.get(position);
+        Expense currentExpense = expenseList.get(position);
+        holder.showExpenseTypeTV.setText(currentExpense.getType());
+        holder.showExpenseDateTV.setText(currentExpense.getDate());
+        holder.showExpenseTimeTV.setText(currentExpense.getTime());
+        holder.showExpenseAmountTV.setText(currentExpense.getAmount()+"Taka");
+
+
     }
 
     @Override
