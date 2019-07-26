@@ -4,6 +4,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="expenses">Expenses</string>
+
     <string-array name="expenseType">
         <item>Electricity Bill</item>
         <item>Gas Bill</item>

@@ -1,11 +1,17 @@
 package com.example.dailyexpenseproject;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,14 +37,45 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Expense currentExpense = expenseList.get(position);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        final Expense currentExpense = expenseList.get(position);
+        //holder.receiptImageIV.setImageBitmap(currentExpense.getReceipt());
         holder.showExpenseTypeTV.setText(currentExpense.getType());
         holder.showExpenseDateTV.setText(currentExpense.getDate());
         holder.showExpenseTimeTV.setText(currentExpense.getTime());
-        holder.showExpenseAmountTV.setText(currentExpense.getAmount()+"Taka");
+        holder.showExpenseAmountTV.setText(currentExpense.getAmount()+" Tk");
 
+        holder.optionMenuIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(context,holder.optionMenuIV);
+                popupMenu.inflate(R.menu.item_option_menu);
 
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if(menuItem.getItemId()==R.id.updateMenu){
+                            Intent intent = new Intent(context,addExpenseActivity.class);
+                            intent.putExtra("id",String.valueOf(currentExpense.getId()));
+                            intent.putExtra("type",currentExpense.getType());
+                            intent.putExtra("date",currentExpense.getDate());
+                            intent.putExtra("time",currentExpense.getTime());
+                            intent.putExtra("amount",String.valueOf(currentExpense.getAmount()));
+                            context.startActivity(intent);
+                        }
+                        else if(menuItem.getItemId()==R.id.deleteMenu){
+                            databaseHelper.delete(currentExpense.getId());
+                            expenseList.remove(position);
+                            Toast.makeText(context, "Expense Deleted", Toast.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
+                        }
+
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
     }
 
     @Override

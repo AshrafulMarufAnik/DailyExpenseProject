@@ -70,11 +70,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void update(int id) {
+    public void update(int id,String type,String date,String time,double amount) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(table1_COL_id,id);
+        contentValues.put(table1_COL_type,type);
+        contentValues.put(table1_COL_date,date);
+        contentValues.put(table1_COL_time,time);
+        contentValues.put(table1_COL_amount,amount);
 
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.update(TABLE1_NAME,contentValues,"Id=?",new String[]{String.valueOf(id)});
+        sqLiteDatabase.close();
+    }
+
+    public void update(int id,String type,String date,String time,double amount,String receipt) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(table1_COL_id,id);
+        contentValues.put(table1_COL_type,type);
+        contentValues.put(table1_COL_date,date);
+        contentValues.put(table1_COL_time,time);
+        contentValues.put(table1_COL_amount,amount);
+        contentValues.put(table1_COL_receipt,receipt);
+
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.update(TABLE1_NAME,contentValues,"Id=?",new String[]{String.valueOf(id)});
+        sqLiteDatabase.close();
     }
 
     public void delete(int id){
-
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.delete(TABLE1_NAME,"Id=?",new String[]{String.valueOf(id)});
     }
 }

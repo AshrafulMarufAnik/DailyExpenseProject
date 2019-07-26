@@ -29,7 +29,7 @@ public class dashboardFragment extends Fragment {
     private TextView totalExpenseTV,fromDateSetTV,toDateSetTV;
     private FloatingActionButton addNewFAB;
     private DatabaseHelper databaseHelper;
-    private double sumAmount;
+    private double sumAmount=0;
 
     public dashboardFragment() {
 
@@ -39,7 +39,10 @@ public class dashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_dashboard,container,false);
+
         init();
+        spinnerLoad();
+        totalExpenseAmount();
 
         addNewFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,10 +51,6 @@ public class dashboardFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        String expenseTypes [] = getResources().getStringArray(R.array.expenseType);
-        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,android.R.layout.simple_spinner_item);
-        expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
 
         fromDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,10 +66,14 @@ public class dashboardFragment extends Fragment {
             }
         });
 
-        totalExpenseAmount();
-
 
         return view;
+    }
+
+    private void spinnerLoad() {
+        String expenseTypes [] = getResources().getStringArray(R.array.expenseType);
+        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,android.R.layout.simple_spinner_item);
+        expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
     }
 
     private void totalExpenseAmount() {

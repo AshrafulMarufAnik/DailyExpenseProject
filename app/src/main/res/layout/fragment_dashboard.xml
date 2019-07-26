@@ -88,10 +88,19 @@
                         android:layout_margin="5dp"
                         android:weightSum="2">
 
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_date_range_black_24dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:padding="3dp" />
+
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:layout_marginRight="5dp"
                             android:layout_weight="1"
                             android:id="@+id/dashBoardFromDateClickTV">
 
@@ -119,6 +128,14 @@
                             android:background="@color/deep_blue">
 
                         </View>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_access_time_black_24dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="17dp"
+                            android:padding="3dp" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -173,8 +190,7 @@
                     android:background="@color/deep_blue"
                     android:text="Total Expense"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:textAlignment="center"/>
 
                 <TextView
@@ -182,12 +198,13 @@
                     android:layout_height="match_parent"
                     android:background="#F3F1F1"
                     android:text="Total Expense Tk."
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
                     android:id="@+id/dashBoardTotalExpenseTV"
-                    android:textSize="30sp"
+                    android:textSize="25sp"
                     android:gravity="center"
                     android:textColor="#000000"
                     android:textStyle="bold"
-                    android:padding="5dp"
                     android:textAlignment="center"/>
 
             </LinearLayout>
@@ -200,8 +217,11 @@
             android:id="@+id/dashBoardAddExpenseBTN"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:src="@drawable/ic_expense_add_black_24dp"
-            android:layout_margin="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="3dp"
             android:padding="10dp"/>
 
 

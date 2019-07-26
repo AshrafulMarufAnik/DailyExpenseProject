@@ -48,6 +48,7 @@ public class expenseShowFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_expense_show,container,false);
 
         init();
+        spinnerLoad();
         getDataFromDB();
         configExpenseRV();
 
@@ -58,10 +59,6 @@ public class expenseShowFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        String expenseTypes [] = getResources().getStringArray(R.array.expenseType);
-        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,android.R.layout.simple_spinner_item);
-        expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
 
         fromDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +75,12 @@ public class expenseShowFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void spinnerLoad() {
+        String expenseTypes [] = getResources().getStringArray(R.array.expenseType);
+        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,android.R.layout.simple_spinner_item);
+        expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
     }
 
     private void handleToDate() {
@@ -128,25 +131,23 @@ public class expenseShowFragment extends Fragment {
 
         while(currentCursor.moveToNext())
         {
-           String id = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_id));
+           int id = Integer.parseInt(currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_id)));
            String type = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_type));
            String date = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_date));
            String time = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_time));
            double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.table1_COL_amount));
            String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_receipt));
 
-            Expense currentExpense = new Expense(type,date,time,amount,receipt);
+            Expense currentExpense = new Expense(id,type,date,time,amount,receipt);
             expenseList.add(currentExpense);
             dataAdapter.notifyDataSetChanged();
         }
     }
 
     private void configExpenseRV() {
-
         expenseRV.setLayoutManager(new LinearLayoutManager(getContext()));
         expenseRV.setAdapter(dataAdapter);
-
-
+        dataAdapter.notifyDataSetChanged();
     }
 
     private void init() {
@@ -158,11 +159,9 @@ public class expenseShowFragment extends Fragment {
         toDateSetTV = view.findViewById(R.id.toDateSetTV);
         expenseRV = view.findViewById(R.id.expenseListRV);
 
-
         expenseList = new ArrayList<>();
         databaseHelper = new DatabaseHelper(getContext());
         dataAdapter = new DataAdapter(databaseHelper,expenseList,getContext());
     }
-
 
 }
