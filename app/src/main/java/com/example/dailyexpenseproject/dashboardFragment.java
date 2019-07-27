@@ -71,7 +71,6 @@ public class dashboardFragment extends Fragment {
     }
 
     private void spinnerLoad() {
-        String expenseTypes [] = getResources().getStringArray(R.array.expenseType);
         ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,android.R.layout.simple_spinner_item);
         expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
     }

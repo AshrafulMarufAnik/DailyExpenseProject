@@ -3,6 +3,7 @@ package com.example.dailyexpenseproject;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -39,11 +40,12 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Expense currentExpense = expenseList.get(position);
-        //holder.receiptImageIV.setImageBitmap(currentExpense.getReceipt());
+        //holder.receiptImageIV.setImageBitmap(BitmapFactory.decodeFile(currentExpense.getReceipt()));
         holder.showExpenseTypeTV.setText(currentExpense.getType());
         holder.showExpenseDateTV.setText(currentExpense.getDate());
         holder.showExpenseTimeTV.setText(currentExpense.getTime());
         holder.showExpenseAmountTV.setText(currentExpense.getAmount()+" Tk");
+        //holder.receiptImageIV.setImageURI(Uri.parse(Uri.decode(currentExpense.getReceipt())));
 
         holder.optionMenuIV.setOnClickListener(new View.OnClickListener() {
             @Override

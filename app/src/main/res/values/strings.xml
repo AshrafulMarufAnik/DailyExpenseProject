@@ -11,10 +11,11 @@
         <item>Water Supply Bill</item>
         <item>Internet Bill</item>
         <item>House Rent</item>
-        <item>Grocery expense</item>
-        <item>Transportation expense</item>
+        <item>Grocery</item>
+        <item>Transportation</item>
         <item>Children expense</item>
-        <item>Entertainment expense</item>
+        <item>Entertainment</item>
+        <item>Others</item>
 
     </string-array>
 

@@ -17,11 +17,11 @@
 
         <activity android:name=".addExpenseActivity"
             android:theme="@style/CustomBlueTheme"
-            android:label="Add new Expense"></activity>
+            android:label="Add new Expense">
+        </activity>
 
         <activity
-            android:name=".MainActivity"
-            android:label="Home">
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

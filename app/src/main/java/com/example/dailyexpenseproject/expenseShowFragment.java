@@ -78,7 +78,6 @@ public class expenseShowFragment extends Fragment {
     }
 
     private void spinnerLoad() {
-        String expenseTypes [] = getResources().getStringArray(R.array.expenseType);
         ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,android.R.layout.simple_spinner_item);
         expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
     }
@@ -138,9 +137,9 @@ public class expenseShowFragment extends Fragment {
            double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.table1_COL_amount));
            String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_receipt));
 
-            Expense currentExpense = new Expense(id,type,date,time,amount,receipt);
-            expenseList.add(currentExpense);
-            dataAdapter.notifyDataSetChanged();
+           Expense expenses = new Expense(id,type,date,time,amount,receipt);
+           expenseList.add(expenses);
+           dataAdapter.notifyDataSetChanged();
         }
     }
 

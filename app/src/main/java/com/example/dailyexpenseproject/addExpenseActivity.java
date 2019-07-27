@@ -55,7 +55,7 @@ public class addExpenseActivity extends AppCompatActivity {
         init();
         spinnerLoad();
 
-        if(getIntent().getExtras()!=null){
+        if(getIntent().getExtras()!=null){ //update expense data code
             setTitle("Update Expense");
             addReceiptBTN.setText("Update Image");
             saveExpenseBTN.setText("Update");
@@ -143,7 +143,7 @@ public class addExpenseActivity extends AppCompatActivity {
                 else if(optionItems[i].equals("Gallery")){
                     Intent intent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent,"Select File"),select_file);
+                    startActivityForResult(Intent.createChooser(intent,"Select Source"),select_file);
 
                 }
                 else if(optionItems[i].equals("Cancel")){
@@ -175,7 +175,6 @@ public class addExpenseActivity extends AppCompatActivity {
     }
 
     private void spinnerLoad() {
-        String expenseTypes [] = getResources().getStringArray(R.array.expenseType);
         ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(this,R.array.expenseType,android.R.layout.simple_spinner_item);
         expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
     }
@@ -223,14 +222,13 @@ public class addExpenseActivity extends AppCompatActivity {
 
     public void insertNewExpenseIntoDB(View view) {
         if(expenseTypeSpinner.getSelectedItem()==null || datePickerTV.getText().toString().isEmpty() || timePickerTV.getText().toString().isEmpty() || expenseAmountET.getText().toString().isEmpty()){
-            Toast.makeText(this, "Enter Expense type, Date, Time and Amount", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Enter Expense type, Date&Time and Amount", Toast.LENGTH_SHORT).show();
         }
         else {
             expenseType = expenseTypeSpinner.getSelectedItem().toString();
             expenseDate = datePickerTV.getText().toString();
             expenseTime = timePickerTV.getText().toString();
             expenseAmount = Double.parseDouble(expenseAmountET.getText().toString());
-            expenseReceiptImage = String.valueOf(receiptIV.getImageAlpha());
 
             databaseHelper.insert(expenseType,expenseDate,expenseTime,expenseAmount,expenseReceiptImage);
 
@@ -251,10 +249,6 @@ public class addExpenseActivity extends AppCompatActivity {
         datePickerTV.setText(date);
         timePickerTV.setText(time);
         expenseAmountET.setText(amount);
-
-    }
-
-    private void getIntentData() {
 
     }
 
