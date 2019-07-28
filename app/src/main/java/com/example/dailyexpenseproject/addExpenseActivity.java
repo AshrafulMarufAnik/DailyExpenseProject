@@ -11,11 +11,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,8 +30,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class addExpenseActivity extends AppCompatActivity {
     private Spinner expenseTypeSpinner;
@@ -42,6 +48,7 @@ public class addExpenseActivity extends AppCompatActivity {
     private String expenseType,expenseDate,expenseTime;
     private double expenseAmount;
     private String id;
+    private long dateInMS;
     private String expenseReceiptImage;
     private int request_camera=1,select_file=0;
 
@@ -144,7 +151,6 @@ public class addExpenseActivity extends AppCompatActivity {
                     Intent intent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
                     startActivityForResult(Intent.createChooser(intent,"Select Source"),select_file);
-
                 }
                 else if(optionItems[i].equals("Cancel")){
                     dialogInterface.dismiss();
@@ -164,11 +170,12 @@ public class addExpenseActivity extends AppCompatActivity {
                 Bundle bundle = data.getExtras();
                 final Bitmap bmp = (Bitmap) bundle.get("data");
                 receiptIV.setImageBitmap(bmp);
-                expenseReceiptImage = String.valueOf(bmp);
+                expenseReceiptImage = encodeToBase64(bmp, Bitmap.CompressFormat.JPEG, 100);
             }
             else if(requestCode == select_file){
                 Uri selectImageUri = data.getData();
                 receiptIV.setImageURI(selectImageUri);
+                //expenseReceiptImage = encodeToBase64(selectImageUri, Bitmap.CompressFormat.JPEG, 100);
                 expenseReceiptImage = String.valueOf(selectImageUri);
             }
         }
@@ -188,10 +195,10 @@ public class addExpenseActivity extends AppCompatActivity {
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-               Calendar calendar1 = Calendar.getInstance();
-               calendar1.set(Calendar.HOUR,hour);
-               calendar1.set(Calendar.MINUTE,minute);
-               CharSequence charSequence = DateFormat.format("hh:mm a",calendar1);
+               Calendar time = Calendar.getInstance();
+                time.set(Calendar.HOUR,hour);
+                time.set(Calendar.MINUTE,minute);
+               CharSequence charSequence = DateFormat.format("hh:mm a",time);
                timePickerTV.setText(charSequence);
             }
         },hour,minute,is24HourFormat);
@@ -199,23 +206,35 @@ public class addExpenseActivity extends AppCompatActivity {
     }
 
     private void currentDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(calendar.YEAR);
-        int month = calendar.get(calendar.MONTH);
-        int date = calendar.get(calendar.DATE);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int date) {
-                Calendar calendar1 = Calendar.getInstance();
-                calendar1.set(Calendar.YEAR,year);
-                calendar1.set(Calendar.MONTH,month);
-                calendar1.set(Calendar.DATE,date);
-                CharSequence charSequence = DateFormat.format("EEEE, dd MMM yyyy",calendar1);
-                datePickerTV.setText(charSequence);
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
 
+                month = month + 1;
+
+                String currentDate = year + "/" + month + "/" + day;
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+                Date date = null;
+
+                try {
+                    date = simpleDateFormat.parse(currentDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                dateInMS = date.getTime();
+                datePickerTV.setText(simpleDateFormat.format(date));
             }
-        },year,month,date);
+        };
+
+        Calendar calendar = Calendar.getInstance();
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, onDateSetListener, year, month, day);
         datePickerDialog.show();
     }
 
@@ -230,12 +249,27 @@ public class addExpenseActivity extends AppCompatActivity {
             expenseTime = timePickerTV.getText().toString();
             expenseAmount = Double.parseDouble(expenseAmountET.getText().toString());
 
-            databaseHelper.insert(expenseType,expenseDate,expenseTime,expenseAmount,expenseReceiptImage);
+
+            databaseHelper.insert(expenseType,dateInMS,expenseTime,expenseAmount,expenseReceiptImage);
 
             Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this,MainActivity.class));
             finish();
         }
+    }
+
+    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
+    {
+        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+        image.compress(compressFormat, quality, byteArrayOS);
+
+        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+    }
+
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
     private void getAndSetIntentData() {

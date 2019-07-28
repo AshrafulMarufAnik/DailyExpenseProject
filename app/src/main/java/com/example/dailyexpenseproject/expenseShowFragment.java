@@ -14,6 +14,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.zip.Inflater;
 
 public class expenseShowFragment extends Fragment {
     private View view;
@@ -42,14 +44,16 @@ public class expenseShowFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_expense_show,container,false);
 
         init();
         spinnerLoad();
+
         getDataFromDB();
+
         configExpenseRV();
 
         addExpenseFAB.setOnClickListener(new View.OnClickListener() {
@@ -128,11 +132,12 @@ public class expenseShowFragment extends Fragment {
 
         Cursor currentCursor = databaseHelper.showAllData();
 
+
         while(currentCursor.moveToNext())
         {
            int id = Integer.parseInt(currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_id)));
            String type = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_type));
-           String date = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_date));
+           long date = currentCursor.getLong(currentCursor.getColumnIndex(databaseHelper.table1_COL_date));
            String time = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_time));
            double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.table1_COL_amount));
            String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_receipt));

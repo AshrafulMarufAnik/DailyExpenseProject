@@ -3,14 +3,15 @@ package com.example.dailyexpenseproject;
 public class Expense {
     private int Id;
     private String type;
-    private String date,time;
+    private String time;
+    private long date;
     private double amount;
     private String receipt;
 
     public Expense() {
     }
 
-    public Expense(String type, String date, String time, double amount, String receipt) {
+    public Expense(String type, long date, String time, double amount, String receipt) {
         this.type = type;
         this.date = date;
         this.time = time;
@@ -18,7 +19,7 @@ public class Expense {
         this.receipt = receipt;
     }
 
-    public Expense(int id, String type, String date, String time, double amount, String receipt) {
+    public Expense(int id, String type, long date, String time, double amount, String receipt) {
         Id = id;
         this.type = type;
         this.date = date;
@@ -35,7 +36,7 @@ public class Expense {
         return type;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 

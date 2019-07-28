@@ -6,6 +6,7 @@
     <string name="expenses">Expenses</string>
 
     <string-array name="expenseType">
+        <item>All</item>
         <item>Electricity Bill</item>
         <item>Gas Bill</item>
         <item>Water Supply Bill</item>

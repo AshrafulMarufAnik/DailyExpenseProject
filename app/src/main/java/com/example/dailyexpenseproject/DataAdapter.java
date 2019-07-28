@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,12 +18,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     private DatabaseHelper databaseHelper;
     private ArrayList<Expense> expenseList;
     private Context context;
+    private addExpenseActivity helper = new addExpenseActivity();
 
     public DataAdapter(DatabaseHelper databaseHelper, ArrayList<Expense> expenseList, Context context) {
         this.databaseHelper = databaseHelper;
@@ -40,9 +44,15 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Expense currentExpense = expenseList.get(position);
-        //holder.receiptImageIV.setImageBitmap(BitmapFactory.decodeFile(currentExpense.getReceipt()));
+
+
+        //holder.receiptImageIV.setImageBitmap(bmpImage);
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
+        String dateString = formatter.format(new Date(currentExpense.getDate()));
+
+        //holder.receiptImageIV.setImageResource(R.drawable.ic_restaurant_menu_black_24dp);
         holder.showExpenseTypeTV.setText(currentExpense.getType());
-        holder.showExpenseDateTV.setText(currentExpense.getDate());
+        holder.showExpenseDateTV.setText(dateString);
         holder.showExpenseTimeTV.setText(currentExpense.getTime());
         holder.showExpenseAmountTV.setText(currentExpense.getAmount()+" Tk");
         //holder.receiptImageIV.setImageURI(Uri.parse(Uri.decode(currentExpense.getReceipt())));
@@ -99,5 +109,11 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             receiptImageIV = itemView.findViewById(R.id.showSingleExpenseReceiptPreviewIV);
             optionMenuIV = itemView.findViewById(R.id.showExpenseOptionMenuIV);
         }
+    }
+
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }

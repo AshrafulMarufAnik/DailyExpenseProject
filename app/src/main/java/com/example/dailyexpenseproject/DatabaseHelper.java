@@ -17,10 +17,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String table1_COL_amount = "expenseAmount";
     public static String table1_COL_receipt = "expenseReceipt";
     public static int DB_VERSION = 1;
+    public String type;
 
     //Sql Queries
     public String create_table1 = "create table "+TABLE1_NAME+"(Id integer primary key,expenseType String,expenseDate String,expenseTime String,expenseAmount String,expenseReceipt String)";
     public String show_all_data_table1 = "select * from "+TABLE1_NAME+"";
+    public String show_type_wise_data = "select * from "+TABLE1_NAME+" where "+table1_COL_type+"";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DB_VERSION);
@@ -43,7 +45,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void insert(String type,String date,String time,double amount,String receipt) {
+    public Cursor showDataTypeWise(String type){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor1 = sqLiteDatabase.rawQuery(show_type_wise_data+"="+type,null);
+
+        return cursor1;
+    }
+
+    public void insert(String type,long date,String time,double amount,String receipt) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(table1_COL_type,type);
         contentValues.put(table1_COL_date,date);
@@ -57,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insert(String type,String date,String time,double amount) {
+    public void insert(String type,long date,String time,double amount) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(table1_COL_type,type);
         contentValues.put(table1_COL_date,date);
