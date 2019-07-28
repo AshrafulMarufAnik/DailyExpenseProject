@@ -16,7 +16,9 @@
 
         <ImageView
             android:layout_width="75dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:layout_margin="5dp"
             android:src="@drawable/ic_image_black_24dp"
             android:id="@+id/showSingleExpenseReceiptPreviewIV"/>
 
@@ -26,7 +28,7 @@
             android:orientation="vertical"
             android:id="@+id/expenseInfo"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="5dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/showSingleExpenseReceiptPreviewIV"
             android:layout_toLeftOf="@id/showSingleExpenseAmountTV">

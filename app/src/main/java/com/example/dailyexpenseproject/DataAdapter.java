@@ -1,10 +1,12 @@
 package com.example.dailyexpenseproject;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,8 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +30,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     private DatabaseHelper databaseHelper;
     private ArrayList<Expense> expenseList;
     private Context context;
-    private addExpenseActivity helper = new addExpenseActivity();
+    private AddExpenseActivity helper = new AddExpenseActivity();
 
     public DataAdapter(DatabaseHelper databaseHelper, ArrayList<Expense> expenseList, Context context) {
         this.databaseHelper = databaseHelper;
@@ -45,17 +49,23 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Expense currentExpense = expenseList.get(position);
 
+        String receipt = currentExpense.getReceipt();
 
-        //holder.receiptImageIV.setImageBitmap(bmpImage);
+        Bitmap bmpImage = decodeBase64(receipt);
+        holder.receiptImageIV.setImageBitmap(bmpImage);
+
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
         String dateString = formatter.format(new Date(currentExpense.getDate()));
 
-        //holder.receiptImageIV.setImageResource(R.drawable.ic_restaurant_menu_black_24dp);
         holder.showExpenseTypeTV.setText(currentExpense.getType());
         holder.showExpenseDateTV.setText(dateString);
         holder.showExpenseTimeTV.setText(currentExpense.getTime());
         holder.showExpenseAmountTV.setText(currentExpense.getAmount()+" Tk");
-        //holder.receiptImageIV.setImageURI(Uri.parse(Uri.decode(currentExpense.getReceipt())));
+
+        //Uri uriImage = Uri.parse(currentExpense.getReceipt());
+        //holder.receiptImageIV.setImageURI(uriImage);
+
+
 
         holder.optionMenuIV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,19 +77,47 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         if(menuItem.getItemId()==R.id.updateMenu){
-                            Intent intent = new Intent(context,addExpenseActivity.class);
+                            Intent intent = new Intent(context, AddExpenseActivity.class);
                             intent.putExtra("id",String.valueOf(currentExpense.getId()));
                             intent.putExtra("type",currentExpense.getType());
                             intent.putExtra("date",currentExpense.getDate());
                             intent.putExtra("time",currentExpense.getTime());
                             intent.putExtra("amount",String.valueOf(currentExpense.getAmount()));
+                            intent.putExtra("receipt",currentExpense.getReceipt());
+                            context.startActivity(intent);
+                        }
+                        else if(menuItem.getItemId()==R.id.detailsMenu)
+                        {
+                            Intent intent = new Intent(context, DetailsActivity.class);
+                            intent.putExtra("id",String.valueOf(currentExpense.getId()));
+                            intent.putExtra("type",currentExpense.getType());
+                            intent.putExtra("date",currentExpense.getDate());
+                            intent.putExtra("time",currentExpense.getTime());
+                            intent.putExtra("amount",String.valueOf(currentExpense.getAmount()));
+                            intent.putExtra("receipt",currentExpense.getReceipt());
                             context.startActivity(intent);
                         }
                         else if(menuItem.getItemId()==R.id.deleteMenu){
-                            databaseHelper.delete(currentExpense.getId());
-                            expenseList.remove(position);
-                            Toast.makeText(context, "Expense Deleted", Toast.LENGTH_SHORT).show();
-                            notifyDataSetChanged();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setCancelable(false);
+                            builder.setTitle("Delete");
+                            builder.setMessage("Are you sure?");
+                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    databaseHelper.delete(currentExpense.getId());
+                                    expenseList.remove(position);
+                                    Toast.makeText(context, "Expense Deleted", Toast.LENGTH_SHORT).show();
+                                    notifyDataSetChanged();
+                                }
+                            });
+                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.create().show();
                         }
 
                         return false;
@@ -116,4 +154,5 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
+
 }

@@ -1,10 +1,8 @@
 package com.example.dailyexpenseproject;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
@@ -12,9 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Dashboard");
         init();
         configBottomNavView();
-        replaceFragment(new dashboardFragment());
+        replaceFragment(new DashboardFragment());
 
     }
 
@@ -47,12 +42,12 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.nav_menu_dashboard:
-                    replaceFragment(new dashboardFragment());
+                    replaceFragment(new DashboardFragment());
                     setTitle("Home Dashboard");
                     return true;
 
                 case R.id.nav_menu_Expenses:
-                    replaceFragment(new expenseShowFragment());
+                    replaceFragment(new ExpenseShowFragment());
                     setTitle("Expense list");
                     return true;
             }

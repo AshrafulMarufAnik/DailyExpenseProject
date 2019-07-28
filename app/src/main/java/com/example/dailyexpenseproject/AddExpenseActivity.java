@@ -7,12 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,13 +29,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
-import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class addExpenseActivity extends AppCompatActivity {
+public class AddExpenseActivity extends AppCompatActivity {
     private Spinner expenseTypeSpinner;
     private LinearLayout datePicker,timePicker;
     private ImageView receiptIV,deleteReceiptIV;
@@ -50,9 +47,11 @@ public class addExpenseActivity extends AppCompatActivity {
     private String id;
     private long dateInMS;
     private String expenseReceiptImage;
-    private int request_camera=1,select_file=0;
+    private int request_camera=1,select_file=0,imageType;
 
     private DatabaseHelper databaseHelper;
+    private long date;
+    private String receipt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +61,7 @@ public class addExpenseActivity extends AppCompatActivity {
         init();
         spinnerLoad();
 
-        if(getIntent().getExtras()!=null){ //update expense data code
+        if(getIntent().getExtras()!=null){ //update expense if intent data exists
             setTitle("Update Expense");
             addReceiptBTN.setText("Update Image");
             saveExpenseBTN.setText("Update");
@@ -73,23 +72,21 @@ public class addExpenseActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if(expenseAmountET.getText().toString().isEmpty() || datePickerTV.getText().toString().isEmpty() || datePickerTV.getText().toString().isEmpty()){
-                        Toast.makeText(addExpenseActivity.this, "Enter New data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddExpenseActivity.this, "Enter New data", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         expenseType = expenseTypeSpinner.getSelectedItem().toString();
-                        expenseDate = datePickerTV.getText().toString();
                         expenseTime = timePickerTV.getText().toString();
                         expenseAmount = Double.parseDouble(expenseAmountET.getText().toString());
 
-                        databaseHelper.update(Integer.parseInt(id),expenseType,expenseDate,expenseTime,expenseAmount);
-                        Toast.makeText(addExpenseActivity.this, "Data Updated", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(addExpenseActivity.this,MainActivity.class));
+                        databaseHelper.update(Integer.parseInt(id),expenseType,dateInMS,expenseTime,expenseAmount,expenseReceiptImage);
+                        Toast.makeText(AddExpenseActivity.this, "Data Updated", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(AddExpenseActivity.this,MainActivity.class));
                         finish();
                     }
                 }
             });
         }
-
 
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,13 +113,13 @@ public class addExpenseActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final CharSequence [] optionItems = {"Remove Image","Cancel"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(addExpenseActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddExpenseActivity.this);
                 builder.setItems(optionItems, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(optionItems[i].equals("Remove Image")){
                             receiptIV.setImageResource(R.drawable.ic_image_black_24dp);
-                            Toast.makeText(addExpenseActivity.this, "Image Removed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddExpenseActivity.this, "Image Removed", Toast.LENGTH_SHORT).show();
                         }
                         else if(optionItems[i].equals("Cancel")){
                             dialogInterface.dismiss();
@@ -137,7 +134,7 @@ public class addExpenseActivity extends AppCompatActivity {
 
     private void selectReceiptImage() {
         final CharSequence [] optionItems = {"Camera","Gallery","Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(addExpenseActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddExpenseActivity.this);
         builder.setTitle("Choose Image Source");
         builder.setItems(optionItems, new DialogInterface.OnClickListener() {
             @Override
@@ -171,12 +168,12 @@ public class addExpenseActivity extends AppCompatActivity {
                 final Bitmap bmp = (Bitmap) bundle.get("data");
                 receiptIV.setImageBitmap(bmp);
                 expenseReceiptImage = encodeToBase64(bmp, Bitmap.CompressFormat.JPEG, 100);
+
             }
             else if(requestCode == select_file){
                 Uri selectImageUri = data.getData();
                 receiptIV.setImageURI(selectImageUri);
-                //expenseReceiptImage = encodeToBase64(selectImageUri, Bitmap.CompressFormat.JPEG, 100);
-                expenseReceiptImage = String.valueOf(selectImageUri);
+                expenseReceiptImage = selectImageUri.toString();
             }
         }
     }
@@ -238,7 +235,6 @@ public class addExpenseActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-
     public void insertNewExpenseIntoDB(View view) {
         if(expenseTypeSpinner.getSelectedItem()==null || datePickerTV.getText().toString().isEmpty() || timePickerTV.getText().toString().isEmpty() || expenseAmountET.getText().toString().isEmpty()){
             Toast.makeText(this, "Enter Expense type, Date&Time and Amount", Toast.LENGTH_SHORT).show();
@@ -275,12 +271,19 @@ public class addExpenseActivity extends AppCompatActivity {
     private void getAndSetIntentData() {
         id = getIntent().getStringExtra("id");
         String type = getIntent().getStringExtra("type");
-        String date = getIntent().getStringExtra("date");
+        date = getIntent().getLongExtra("date",0);
         String time = getIntent().getStringExtra("time");
         String amount = getIntent().getStringExtra("amount");
+        receipt = getIntent().getStringExtra("receipt");
+
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
+        String dateString = formatter.format(new Date(date));
+
+        Bitmap bmpImage = decodeBase64(receipt);
+        receiptIV.setImageBitmap(bmpImage);
 
         //problem for spinner
-        datePickerTV.setText(date);
+        datePickerTV.setText(dateString);
         timePickerTV.setText(time);
         expenseAmountET.setText(amount);
 

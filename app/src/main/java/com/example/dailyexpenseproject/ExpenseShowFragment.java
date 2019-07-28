@@ -23,23 +23,25 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.zip.Inflater;
+import java.util.Date;
 
-public class expenseShowFragment extends Fragment {
+public class ExpenseShowFragment extends Fragment {
     private View view;
     private Spinner expenseTypeSpinner;
     private LinearLayout fromDatePicker,toDatePicker;
     private FloatingActionButton addExpenseFAB;
     private TextView fromDateSetTV,toDateSetTV;
-
+    private long fromDateInMS,toDateInMS;
     private DataAdapter dataAdapter;
     private DatabaseHelper databaseHelper;
     private ArrayList<Expense> expenseList;
     private RecyclerView expenseRV;
 
-    public expenseShowFragment() {
+    public ExpenseShowFragment() {
 
     }
 
@@ -52,14 +54,35 @@ public class expenseShowFragment extends Fragment {
         init();
         spinnerLoad();
 
-        getDataFromDB();
+        /*
+        expenseTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String expenseType[] = getResources().getStringArray(R.array.expenseType);
+                switch (i)
+                {
+                    case 0:
+                        getDataFromDB();
+                        break;
+                    case 1:
+                        //typeWiseGetDataFromDB(expenseType[i]);
+                        break;
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        }); */
+
+        getDataFromDB();
         configExpenseRV();
 
         addExpenseFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),addExpenseActivity.class);
+                Intent intent = new Intent(getActivity(), AddExpenseActivity.class);
                 startActivity(intent);
             }
         });
@@ -105,6 +128,16 @@ public class expenseShowFragment extends Fragment {
             }
         },year,month,date);
         datePickerDialog.show();
+
+        String currentDate = year + "/" + month + "/" + date;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date1 = null;
+        try {
+            date1 = simpleDateFormat.parse(currentDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        toDateInMS = date1.getTime();
     }
 
     private void handleFromDate() {
@@ -126,25 +159,51 @@ public class expenseShowFragment extends Fragment {
             }
         },year,month,date);
         datePickerDialog.show();
+
+        String currentDate = year + "/" + month + "/" + date;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date1 = null;
+        try {
+            date1 = simpleDateFormat.parse(currentDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        fromDateInMS = date1.getTime();
     }
 
     private void getDataFromDB() {
-
         Cursor currentCursor = databaseHelper.showAllData();
-
 
         while(currentCursor.moveToNext())
         {
-           int id = Integer.parseInt(currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_id)));
-           String type = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_type));
-           long date = currentCursor.getLong(currentCursor.getColumnIndex(databaseHelper.table1_COL_date));
-           String time = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_time));
-           double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.table1_COL_amount));
-           String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.table1_COL_receipt));
+           int id = Integer.parseInt(currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_id)));
+           String type = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_type));
+           long date = currentCursor.getLong(currentCursor.getColumnIndex(databaseHelper.COL_date));
+           String time = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_time));
+           double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.COL_amount));
+           String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_receipt));
 
            Expense expenses = new Expense(id,type,date,time,amount,receipt);
            expenseList.add(expenses);
            dataAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void typeWiseGetDataFromDB(String type){
+        Cursor cursor = databaseHelper.showDataTypeWise(type);
+
+        while(cursor.moveToNext())
+        {
+            int id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(databaseHelper.COL_id)));
+            String expenseType = cursor.getString(cursor.getColumnIndex(databaseHelper.COL_type));
+            long date = cursor.getLong(cursor.getColumnIndex(databaseHelper.COL_date));
+            String time = cursor.getString(cursor.getColumnIndex(databaseHelper.COL_time));
+            double amount = cursor.getDouble(cursor.getColumnIndex(databaseHelper.COL_amount));
+            String receipt = cursor.getString(cursor.getColumnIndex(databaseHelper.COL_receipt));
+
+            Expense expenses = new Expense(id,expenseType,date,time,amount,receipt);
+            expenseList.add(expenses);
+            dataAdapter.notifyDataSetChanged();
         }
     }
 

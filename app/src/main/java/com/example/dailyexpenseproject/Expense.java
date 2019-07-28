@@ -11,10 +11,10 @@ public class Expense {
     public Expense() {
     }
 
-    public Expense(String type, long date, String time, double amount, String receipt) {
+    public Expense(String type, String time, long date, double amount, String receipt) {
         this.type = type;
-        this.date = date;
         this.time = time;
+        this.date = date;
         this.amount = amount;
         this.receipt = receipt;
     }
@@ -51,4 +51,5 @@ public class Expense {
     public String getReceipt() {
         return receipt;
     }
+
 }
