@@ -16,11 +16,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String COL_time = "expenseTime";
     public static String COL_amount = "expenseAmount";
     public static String COL_receipt = "expenseReceipt";
+    public static String COL_receipt_type = "receiptType";
     public static int DB_VERSION = 1;
     public String type;
 
     //Sql Queries
-    public String create_table = "create table "+ TABLE_NAME +"(Id integer primary key,expenseType String,expenseDate String,expenseTime String,expenseAmount String,expenseReceipt String)";
+    public String create_table = "create table "+ TABLE_NAME +"(Id integer primary key,expenseType String,expenseDate String,expenseTime String,expenseAmount String,expenseReceipt String,receiptType int)";
     public String show_all_data_table1 = "select * from "+ TABLE_NAME +"";
     public String show_type_wise_data = "select * from "+ TABLE_NAME +" where " + COL_type;
 
@@ -53,13 +54,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor1;
     }
 
-    public void insert(String type,long date,String time,double amount,String receipt) {
+    public void insert(String type,long date,String time,double amount,String receipt,int receiptType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_type,type);
         contentValues.put(COL_date,date);
         contentValues.put(COL_time,time);
         contentValues.put(COL_amount,amount);
         contentValues.put(COL_receipt,receipt);
+        contentValues.put(COL_receipt_type,receiptType);
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.insert(TABLE_NAME,null,contentValues);
@@ -93,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public void update(int id,String type,long date,String time,double amount,String receipt) {
+    public void update(int id,String type,long date,String time,double amount,String receipt,int receiptType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_id,id);
         contentValues.put(COL_type,type);
@@ -101,6 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_time,time);
         contentValues.put(COL_amount,amount);
         contentValues.put(COL_receipt,receipt);
+        contentValues.put(COL_receipt_type,receiptType);
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.update(TABLE_NAME,contentValues,"Id=?",new String[]{String.valueOf(id)});

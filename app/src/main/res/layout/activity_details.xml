@@ -101,7 +101,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:id="@+id/dateTV"
-                        android:text="Expense Date"
+                        android:text="dd/MM/yy"
                         android:padding="3dp"/>
 
                 </LinearLayout>
@@ -147,7 +147,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:id="@+id/timeTV"
-                        android:text="Expense Time"
+                        android:text="hh:mm a"
                         android:padding="3dp"/>
 
                 </LinearLayout>
@@ -193,7 +193,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:id="@+id/amountTV"
-                        android:text="Expense Amount"
+                        android:text="Tk."
                         android:padding="3dp"/>
 
                 </LinearLayout>

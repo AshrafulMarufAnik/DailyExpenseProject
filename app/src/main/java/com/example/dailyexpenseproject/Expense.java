@@ -7,25 +7,28 @@ public class Expense {
     private long date;
     private double amount;
     private String receipt;
+    private int receiptType;
 
     public Expense() {
     }
 
-    public Expense(String type, String time, long date, double amount, String receipt) {
+    public Expense(String type, String time, long date, double amount, String receipt, int receiptType) {
         this.type = type;
         this.time = time;
         this.date = date;
         this.amount = amount;
         this.receipt = receipt;
+        this.receiptType = receiptType;
     }
 
-    public Expense(int id, String type, long date, String time, double amount, String receipt) {
+    public Expense(int id, String type, String time, long date, double amount, String receipt, int receiptType) {
         Id = id;
         this.type = type;
-        this.date = date;
         this.time = time;
+        this.date = date;
         this.amount = amount;
         this.receipt = receipt;
+        this.receiptType = receiptType;
     }
 
     public int getId() {
@@ -52,4 +55,7 @@ public class Expense {
         return receipt;
     }
 
+    public int getReceiptType() {
+        return receiptType;
+    }
 }

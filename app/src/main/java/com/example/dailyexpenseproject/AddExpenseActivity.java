@@ -47,11 +47,12 @@ public class AddExpenseActivity extends AppCompatActivity {
     private String id;
     private long dateInMS;
     private String expenseReceiptImage;
-    private int request_camera=1,select_file=0,imageType;
-
+    private int request_camera=1,select_file=0,imageType=0;
     private DatabaseHelper databaseHelper;
     private long date;
     private String receipt;
+    private String dateString;
+    private int receiptType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                         expenseTime = timePickerTV.getText().toString();
                         expenseAmount = Double.parseDouble(expenseAmountET.getText().toString());
 
-                        databaseHelper.update(Integer.parseInt(id),expenseType,dateInMS,expenseTime,expenseAmount,expenseReceiptImage);
+                        databaseHelper.update(Integer.parseInt(id),expenseType,dateInMS,expenseTime,expenseAmount,expenseReceiptImage,imageType);
                         Toast.makeText(AddExpenseActivity.this, "Data Updated", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(AddExpenseActivity.this,MainActivity.class));
                         finish();
@@ -119,6 +120,8 @@ public class AddExpenseActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(optionItems[i].equals("Remove Image")){
                             receiptIV.setImageResource(R.drawable.ic_image_black_24dp);
+                            expenseReceiptImage=null;
+                            imageType=0;
                             Toast.makeText(AddExpenseActivity.this, "Image Removed", Toast.LENGTH_SHORT).show();
                         }
                         else if(optionItems[i].equals("Cancel")){
@@ -168,12 +171,14 @@ public class AddExpenseActivity extends AppCompatActivity {
                 final Bitmap bmp = (Bitmap) bundle.get("data");
                 receiptIV.setImageBitmap(bmp);
                 expenseReceiptImage = encodeToBase64(bmp, Bitmap.CompressFormat.JPEG, 100);
+                imageType=1;
 
             }
             else if(requestCode == select_file){
                 Uri selectImageUri = data.getData();
                 receiptIV.setImageURI(selectImageUri);
                 expenseReceiptImage = selectImageUri.toString();
+                imageType=2;
             }
         }
     }
@@ -187,7 +192,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         final Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(calendar.HOUR);
         int minute = calendar.get(calendar.MINUTE);
-        boolean is24HourFormat = DateFormat.is24HourFormat(this);
+        boolean is24HourFormat = false;
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -246,7 +251,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             expenseAmount = Double.parseDouble(expenseAmountET.getText().toString());
 
 
-            databaseHelper.insert(expenseType,dateInMS,expenseTime,expenseAmount,expenseReceiptImage);
+            databaseHelper.insert(expenseType,dateInMS,expenseTime,expenseAmount,expenseReceiptImage,imageType);
 
             Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this,MainActivity.class));
@@ -254,16 +259,14 @@ public class AddExpenseActivity extends AppCompatActivity {
         }
     }
 
-    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
-    {
+    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality){
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
         image.compress(compressFormat, quality, byteArrayOS);
 
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
-    public static Bitmap decodeBase64(String input)
-    {
+    public static Bitmap decodeBase64(String input){
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
@@ -275,18 +278,35 @@ public class AddExpenseActivity extends AppCompatActivity {
         String time = getIntent().getStringExtra("time");
         String amount = getIntent().getStringExtra("amount");
         receipt = getIntent().getStringExtra("receipt");
+        receiptType = getIntent().getIntExtra("receiptType",0);
 
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
-        String dateString = formatter.format(new Date(date));
+        dateString = formatter.format(new Date(date));
 
-        Bitmap bmpImage = decodeBase64(receipt);
-        receiptIV.setImageBitmap(bmpImage);
+        dateInMS = date;
+        expenseReceiptImage = receipt;
+        imageType = receiptType;
 
-        //problem for spinner
-        datePickerTV.setText(dateString);
-        timePickerTV.setText(time);
-        expenseAmountET.setText(amount);
-
+        if(receiptType==1){
+            Bitmap bmpImage = decodeBase64(receipt);
+            receiptIV.setImageBitmap(bmpImage);
+            datePickerTV.setText(dateString);
+            timePickerTV.setText(time);
+            expenseAmountET.setText(amount);
+        }
+        else if(receiptType==2){
+            Uri uriImage = Uri.parse(receipt);
+            receiptIV.setImageURI(uriImage);
+            datePickerTV.setText(dateString);
+            timePickerTV.setText(time);
+            expenseAmountET.setText(amount);
+        }
+        else{
+            //problem for spinner
+            datePickerTV.setText(dateString);
+            timePickerTV.setText(time);
+            expenseAmountET.setText(amount);
+        }
     }
 
     private void init() {

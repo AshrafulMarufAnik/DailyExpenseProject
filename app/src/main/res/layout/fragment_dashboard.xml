@@ -116,7 +116,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/fromDateSetTV"
-                                android:text="11/05/19"
+                                android:text="dd/MM/yy"
                                 android:textAlignment="center"
                                 android:textStyle="normal"/>
 
@@ -156,7 +156,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/toDateSetTV"
-                                android:text="11/05/19"
+                                android:text="dd/MM/yy"
                                 android:textAlignment="center"
                                 android:textStyle="normal"/>
 

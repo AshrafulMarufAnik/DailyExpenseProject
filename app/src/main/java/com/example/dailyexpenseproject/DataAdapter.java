@@ -49,23 +49,34 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Expense currentExpense = expenseList.get(position);
 
-        String receipt = currentExpense.getReceipt();
-
-        Bitmap bmpImage = decodeBase64(receipt);
-        holder.receiptImageIV.setImageBitmap(bmpImage);
-
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
         String dateString = formatter.format(new Date(currentExpense.getDate()));
 
-        holder.showExpenseTypeTV.setText(currentExpense.getType());
-        holder.showExpenseDateTV.setText(dateString);
-        holder.showExpenseTimeTV.setText(currentExpense.getTime());
-        holder.showExpenseAmountTV.setText(currentExpense.getAmount()+" Tk");
+        int type = currentExpense.getReceiptType();
 
-        //Uri uriImage = Uri.parse(currentExpense.getReceipt());
-        //holder.receiptImageIV.setImageURI(uriImage);
-
-
+        if(type==0){
+            holder.showExpenseTypeTV.setText(currentExpense.getType());
+            holder.showExpenseDateTV.setText(dateString);
+            holder.showExpenseTimeTV.setText(currentExpense.getTime());
+            holder.showExpenseAmountTV.setText(currentExpense.getAmount()+" Tk");
+        }
+        else if (type==1){
+            String receipt = currentExpense.getReceipt();
+            Bitmap bmpImage = decodeBase64(receipt);
+            holder.receiptImageIV.setImageBitmap(bmpImage);
+            holder.showExpenseTypeTV.setText(currentExpense.getType());
+            holder.showExpenseDateTV.setText(dateString);
+            holder.showExpenseTimeTV.setText(currentExpense.getTime());
+            holder.showExpenseAmountTV.setText(currentExpense.getAmount()+" Tk");
+        }
+        else if(type==2){
+            Uri uriImage = Uri.parse(currentExpense.getReceipt());
+            holder.receiptImageIV.setImageURI(uriImage);
+            holder.showExpenseTypeTV.setText(currentExpense.getType());
+            holder.showExpenseDateTV.setText(dateString);
+            holder.showExpenseTimeTV.setText(currentExpense.getTime());
+            holder.showExpenseAmountTV.setText(currentExpense.getAmount()+" Tk");
+        }
 
         holder.optionMenuIV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +95,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                             intent.putExtra("time",currentExpense.getTime());
                             intent.putExtra("amount",String.valueOf(currentExpense.getAmount()));
                             intent.putExtra("receipt",currentExpense.getReceipt());
+                            intent.putExtra("receiptType",currentExpense.getReceiptType());
                             context.startActivity(intent);
                         }
                         else if(menuItem.getItemId()==R.id.detailsMenu)
@@ -95,6 +107,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                             intent.putExtra("time",currentExpense.getTime());
                             intent.putExtra("amount",String.valueOf(currentExpense.getAmount()));
                             intent.putExtra("receipt",currentExpense.getReceipt());
+                            intent.putExtra("receiptType",currentExpense.getReceiptType());
                             context.startActivity(intent);
                         }
                         else if(menuItem.getItemId()==R.id.deleteMenu){

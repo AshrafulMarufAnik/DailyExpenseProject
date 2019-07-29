@@ -182,8 +182,9 @@ public class ExpenseShowFragment extends Fragment {
            String time = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_time));
            double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.COL_amount));
            String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_receipt));
+           int receiptType = currentCursor.getInt(currentCursor.getColumnIndex(databaseHelper.COL_receipt_type));
 
-           Expense expenses = new Expense(id,type,date,time,amount,receipt);
+           Expense expenses = new Expense(id,type,time,date,amount,receipt,receiptType);
            expenseList.add(expenses);
            dataAdapter.notifyDataSetChanged();
         }
@@ -200,8 +201,9 @@ public class ExpenseShowFragment extends Fragment {
             String time = cursor.getString(cursor.getColumnIndex(databaseHelper.COL_time));
             double amount = cursor.getDouble(cursor.getColumnIndex(databaseHelper.COL_amount));
             String receipt = cursor.getString(cursor.getColumnIndex(databaseHelper.COL_receipt));
+            int receiptType = cursor.getInt(cursor.getColumnIndex(databaseHelper.COL_receipt_type));
 
-            Expense expenses = new Expense(id,expenseType,date,time,amount,receipt);
+            Expense expenses = new Expense(id,type,time,date,amount,receipt,receiptType);
             expenseList.add(expenses);
             dataAdapter.notifyDataSetChanged();
         }

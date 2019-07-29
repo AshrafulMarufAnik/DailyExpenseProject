@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
@@ -36,6 +37,7 @@ public class DetailsActivity extends AppCompatActivity {
     private String amount;
     private String receipt;
     private long date;
+    private int receiptType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,16 +78,35 @@ public class DetailsActivity extends AppCompatActivity {
         time = getIntent().getStringExtra("time");
         amount = getIntent().getStringExtra("amount");
         receipt = getIntent().getStringExtra("receipt");
+        receiptType = getIntent().getIntExtra("receiptType",0);
 
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
         String dateString = formatter.format(new Date(date));
-        Bitmap bmpImage = decodeBase64(receipt);
 
-        imageIV.setImageBitmap(bmpImage);
-        typeTV.setText(type);
-        dateTV.setText(dateString);
-        timeTV.setText(time);
-        amountTV.setText(amount);
+        if(receiptType==1){
+            Bitmap bmpImage = decodeBase64(receipt);
+            imageIV.setImageBitmap(bmpImage);
+            typeTV.setText(type);
+            dateTV.setText(dateString);
+            timeTV.setText(time);
+            amountTV.setText(amount);
+        }
+        else if(receiptType==2){
+            Uri uriImage = Uri.parse(receipt);
+            imageIV.setImageURI(uriImage);
+            typeTV.setText(type);
+            dateTV.setText(dateString);
+            timeTV.setText(time);
+            amountTV.setText(amount);
+        }
+        else{
+            typeTV.setText(type);
+            dateTV.setText(dateString);
+            timeTV.setText(time);
+            amountTV.setText(amount);
+
+        }
+
     }
 
     private void init() {
@@ -107,6 +128,7 @@ public class DetailsActivity extends AppCompatActivity {
         intent.putExtra("time",time);
         intent.putExtra("amount",String.valueOf(amount));
         intent.putExtra("receipt",receipt);
+        intent.putExtra("receiptType",receiptType);
         startActivity(intent);
     }
 
@@ -147,8 +169,9 @@ public class DetailsActivity extends AppCompatActivity {
             String time = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_time));
             double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.COL_amount));
             String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_receipt));
+            int receiptType = currentCursor.getInt(currentCursor.getColumnIndex(databaseHelper.COL_receipt_type));
 
-            Expense expenses = new Expense(id,type,date,time,amount,receipt);
+            Expense expenses = new Expense(id,type,time,date,amount,receipt,receiptType);
             expenseList.add(expenses);
             dataAdapter.notifyDataSetChanged();
         }
