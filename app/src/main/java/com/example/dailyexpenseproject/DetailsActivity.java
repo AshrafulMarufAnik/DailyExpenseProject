@@ -64,7 +64,7 @@ public class DetailsActivity extends AppCompatActivity {
                 ImageView imageView = new ImageView(DetailsActivity.this);
                 Bitmap bmpImage = decodeBase64(receipt);
                 imageView.setImageBitmap(bmpImage);
-                builder.addContentView(imageView, new RelativeLayout.LayoutParams(700, 700));
+                builder.addContentView(imageView, new RelativeLayout.LayoutParams(900, 900));
                 builder.show();
             }
         });
