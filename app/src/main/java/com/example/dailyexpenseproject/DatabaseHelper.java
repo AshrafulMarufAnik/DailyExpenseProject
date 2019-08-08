@@ -23,7 +23,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Sql Queries
     public String create_table = "create table "+ TABLE_NAME +"(Id integer primary key,expenseType String,expenseDate String,expenseTime String,expenseAmount String,expenseReceipt String,receiptType int)";
     public String show_all_data_table1 = "select * from "+ TABLE_NAME +"";
-    public String show_type_wise_data = "select * from "+ TABLE_NAME +" where " + COL_type;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DB_VERSION);
@@ -47,9 +46,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor showDataTypeWise(String type){
+        String show_type_wise_data = "select * from Expense where expenseType= '"+type+"'";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        String columns[] = {"Id","expenseType","expenseDate","expenseTime","expenseAmount","expenseReceipt"};
-        Cursor cursor1 = sqLiteDatabase.query(TABLE_NAME,columns,type,null,"expenseType",null,"expenseDate");
+        Cursor cursor1 = sqLiteDatabase.rawQuery(show_type_wise_data,null);
 
         return cursor1;
     }
@@ -67,32 +66,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.insert(TABLE_NAME,null,contentValues);
         sqLiteDatabase.close();
 
-    }
-
-    public void insert(String type,long date,String time,double amount) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_type,type);
-        contentValues.put(COL_date,date);
-        contentValues.put(COL_time,time);
-        contentValues.put(COL_amount,amount);
-
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        sqLiteDatabase.insert(TABLE_NAME,null,contentValues);
-        sqLiteDatabase.close();
-
-    }
-
-    public void update(int id,String type,long date,String time,double amount) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_id,id);
-        contentValues.put(COL_type,type);
-        contentValues.put(COL_date,date);
-        contentValues.put(COL_time,time);
-        contentValues.put(COL_amount,amount);
-
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        sqLiteDatabase.update(TABLE_NAME,contentValues,"Id=?",new String[]{String.valueOf(id)});
-        sqLiteDatabase.close();
     }
 
     public void update(int id,String type,long date,String time,double amount,String receipt,int receiptType) {

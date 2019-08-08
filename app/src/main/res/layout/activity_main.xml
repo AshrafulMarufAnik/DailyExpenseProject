@@ -19,10 +19,8 @@
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FAF7F7"
         android:layout_alignParentBottom="true"
-        android:background="@color/deep_blue"
-        app:itemIconTint="#FFFFFF"
-        app:itemTextColor="#FFFFFF"
         app:menu="@menu/bottom_nav_menu"
         android:padding="5dp"/>
 

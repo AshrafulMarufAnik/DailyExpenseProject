@@ -175,7 +175,6 @@
             android:layout_height="match_parent"
             android:layout_below="@id/dashBoardCardView1"
             app:cardBackgroundColor="#F3F1F1"
-            app:cardCornerRadius="6dp"
             app:cardUseCompatPadding="true"
             app:cardElevation="3dp">
 
@@ -189,19 +188,113 @@
                     android:layout_height="wrap_content"
                     android:background="@color/deep_blue"
                     android:text="Total Expense"
+                    android:layout_marginBottom="10dp"
                     android:textColor="#FFFFFF"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:textAlignment="center"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:layout_marginRight="1dp"
+                    android:weightSum="2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.25"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:text="Total Amount of Expenses for : "
+                        android:padding="4dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight=".75"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:text="Type"
+                        android:textSize="15sp"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:id="@+id/filterExpenseTypeTV"
+                        android:padding="4dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:layout_marginRight="1dp"
+                    android:weightSum="2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.25"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:text="Starting Filter date : "
+                        android:padding="4dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight=".75"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:text="DD/mm/YYYy"
+                        android:textSize="15sp"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:id="@+id/filterExpenseFirstDateTV"
+                        android:padding="4dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.5dp"
+                    android:layout_marginRight="1dp"
+                    android:weightSum="2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.25"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:text="Ending Filter date : "
+                        android:padding="4dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight=".75"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:text="DD/mm/YYYy"
+                        android:textSize="15sp"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:id="@+id/filterExpenseLastDateTV"
+                        android:padding="4dp" />
+
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#F3F1F1"
+                    android:background="#FFFFFF"
                     android:text="Total Expense Tk."
-                    android:layout_marginLeft="1dp"
-                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:id="@+id/dashBoardTotalExpenseTV"
                     android:textSize="25sp"
+                    android:layout_gravity="center"
                     android:gravity="center"
                     android:textColor="#000000"
                     android:textStyle="bold"

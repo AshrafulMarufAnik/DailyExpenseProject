@@ -3,6 +3,9 @@ package com.example.dailyexpenseproject;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -16,6 +19,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -53,6 +57,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private String dateString;
     private String updateReceiptImage;
     private int updateImageType;
+    private Fragment fragment;
 
 
     @Override
@@ -150,7 +155,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         deleteReceiptIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final CharSequence [] optionItems = {"Remove Image","Cancel"};
+                final CharSequence [] optionItems = {"Remove Image"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddExpenseActivity.this);
                 builder.setItems(optionItems, new DialogInterface.OnClickListener() {
                     @Override
@@ -164,9 +169,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
                             Toast.makeText(AddExpenseActivity.this, "Image Removed", Toast.LENGTH_SHORT).show();
                         }
-                        else if(optionItems[i].equals("Cancel")){
-                            dialogInterface.dismiss();
-                        }
+
                     }
                 });
                 builder.show();
@@ -176,9 +179,10 @@ public class AddExpenseActivity extends AppCompatActivity {
     }
 
     private void selectReceiptImage() {
-        final CharSequence [] optionItems = {"Camera","Gallery","Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddExpenseActivity.this);
+        final CharSequence [] optionItems = {"Camera","Gallery"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(AddExpenseActivity.this);
         builder.setTitle("Choose Image Source");
+        builder.setCancelable(false);
         builder.setItems(optionItems, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -192,9 +196,13 @@ public class AddExpenseActivity extends AppCompatActivity {
                     intent.setType("image/*");
                     startActivityForResult(Intent.createChooser(intent,"Select Source"),select_file);
                 }
-                else{
-                    dialogInterface.dismiss();
-                }
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
             }
         });
         builder.show();
@@ -302,6 +310,8 @@ public class AddExpenseActivity extends AppCompatActivity {
             Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show();
             imageType=0;
             expenseReceiptImage=null;
+            //MainActivity mainActivity = new MainActivity();
+            //mainActivity.replaceFragment(new ExpenseShowFragment());
             startActivity(new Intent(this,MainActivity.class));
             finish();
         }

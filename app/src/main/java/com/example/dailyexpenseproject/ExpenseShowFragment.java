@@ -54,19 +54,16 @@ public class ExpenseShowFragment extends Fragment {
         init();
         spinnerLoad();
 
-        /*
         expenseTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String expenseType[] = getResources().getStringArray(R.array.expenseType);
-                switch (i)
-                {
-                    case 0:
-                        getDataFromDB();
-                        break;
-                    case 1:
-                        //typeWiseGetDataFromDB(expenseType[i]);
-                        break;
+                if(position==0){
+                    getDataFromDB();
+                }
+                else {
+                    String type = expenseType[position];
+                    typeWiseGetDataFromDB(type);
                 }
             }
 
@@ -74,7 +71,7 @@ public class ExpenseShowFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        }); */
+        });
 
         getDataFromDB();
         configExpenseRV();
@@ -173,6 +170,7 @@ public class ExpenseShowFragment extends Fragment {
 
     private void getDataFromDB() {
         Cursor currentCursor = databaseHelper.showAllData();
+        expenseList.clear();
 
         while(currentCursor.moveToNext())
         {
@@ -192,6 +190,7 @@ public class ExpenseShowFragment extends Fragment {
 
     private void typeWiseGetDataFromDB(String type){
         Cursor cursor = databaseHelper.showDataTypeWise(type);
+        expenseList.clear();
 
         while(cursor.moveToNext())
         {
@@ -203,7 +202,7 @@ public class ExpenseShowFragment extends Fragment {
             String receipt = cursor.getString(cursor.getColumnIndex(databaseHelper.COL_receipt));
             int receiptType = cursor.getInt(cursor.getColumnIndex(databaseHelper.COL_receipt_type));
 
-            Expense expenses = new Expense(id,type,time,date,amount,receipt,receiptType);
+            Expense expenses = new Expense(id,expenseType,time,date,amount,receipt,receiptType);
             expenseList.add(expenses);
             dataAdapter.notifyDataSetChanged();
         }

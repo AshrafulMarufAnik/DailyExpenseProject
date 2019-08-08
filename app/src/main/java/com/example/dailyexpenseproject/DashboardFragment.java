@@ -30,7 +30,7 @@ public class DashboardFragment extends Fragment {
     private View view;
     private Spinner expenseTypeSpinner;
     private LinearLayout fromDatePicker,toDatePicker;
-    private TextView totalExpenseTV,fromDateSetTV,toDateSetTV;
+    private TextView totalExpenseTV,fromDateSetTV,toDateSetTV,filterExpenseType,filterExpenseFromDate,filterExpenseToDate;
     private FloatingActionButton addNewFAB;
     private DatabaseHelper databaseHelper;
     private DataAdapter dataAdapter;
@@ -38,7 +38,7 @@ public class DashboardFragment extends Fragment {
     private long dateInMS;
     private double sumAmount=0;
     private long fromDateInMS,toDateInMS;
-    private double typeWiseSumAmount=0;
+    private double typeWiseSumAmount;
 
     public DashboardFragment() {
 
@@ -53,19 +53,17 @@ public class DashboardFragment extends Fragment {
         spinnerLoad();
         totalExpenseAmount();
 
-        /*
         expenseTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String expenseType[] = getResources().getStringArray(R.array.expenseType);
-                switch (i)
-                {
-                    case 0:
-                        totalExpenseAmount();
-                        break;
-                    case 1:
-                        //typeWiseTotalAmount(expenseType[i]);
-                        break;
+                if(position==0){
+                    totalExpenseAmount();
+                }
+                else {
+                    String type = expenseType[position];
+                    filterExpenseType.setText(type);
+                    typeWiseTotalAmount(type);
                 }
             }
 
@@ -73,7 +71,7 @@ public class DashboardFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        }); */
+        });
 
 
         addNewFAB.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +101,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void spinnerLoad() {
-        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,android.R.layout.simple_spinner_item);
+        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,R.layout.single_spinner_item);
         expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
     }
 
@@ -121,6 +119,7 @@ public class DashboardFragment extends Fragment {
 
     private void typeWiseTotalAmount(String type){
         Cursor cursor = databaseHelper.showDataTypeWise(type);
+        typeWiseSumAmount = 0.0;
 
         while(cursor.moveToNext())
         {
@@ -201,6 +200,9 @@ public class DashboardFragment extends Fragment {
         toDatePicker = view.findViewById(R.id.dashBoardToDateClickTV);
         fromDateSetTV = view.findViewById(R.id.fromDateSetTV);
         toDateSetTV = view.findViewById(R.id.toDateSetTV);
+        filterExpenseType = view.findViewById(R.id.filterExpenseTypeTV);
+        filterExpenseFromDate = view.findViewById(R.id.filterExpenseFirstDateTV);
+        filterExpenseToDate = view.findViewById(R.id.filterExpenseLastDateTV);
 
         databaseHelper = new DatabaseHelper(getContext());
         dataAdapter = new DataAdapter(databaseHelper,expenseList,getContext());
