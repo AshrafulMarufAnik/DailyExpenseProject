@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +50,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Expense currentExpense = expenseList.get(position);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
+        //SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         String dateString = formatter.format(new Date(currentExpense.getDate()));
 
         int type = currentExpense.getReceiptType();
@@ -162,8 +164,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         }
     }
 
-    public static Bitmap decodeBase64(String input)
-    {
+    public static Bitmap decodeBase64(String input){
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }

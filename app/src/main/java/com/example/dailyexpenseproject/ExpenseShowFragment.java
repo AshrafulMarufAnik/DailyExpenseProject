@@ -16,10 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -32,13 +34,15 @@ import java.util.Date;
 public class ExpenseShowFragment extends Fragment {
     private View view;
     private Spinner expenseTypeSpinner;
-    private LinearLayout fromDatePicker,toDatePicker;
+    private LinearLayout fromDatePicker, toDatePicker;
     private FloatingActionButton addExpenseFAB;
-    private TextView fromDateSetTV,toDateSetTV;
-    private long fromDateInMS,toDateInMS;
+    private Button filterBTN;
+    private TextView fromDateSetTV, toDateSetTV;
+    private long fromDateInMS, toDateInMS;
     private DataAdapter dataAdapter;
     private DatabaseHelper databaseHelper;
     private ArrayList<Expense> expenseList;
+    private ArrayList<Expense> newExpenseList;
     private RecyclerView expenseRV;
 
     public ExpenseShowFragment() {
@@ -49,7 +53,7 @@ public class ExpenseShowFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_expense_show,container,false);
+        view = inflater.inflate(R.layout.fragment_expense_show, container, false);
 
         init();
         spinnerLoad();
@@ -58,10 +62,9 @@ public class ExpenseShowFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String expenseType[] = getResources().getStringArray(R.array.expenseType);
-                if(position==0){
+                if (position == 0) {
                     getDataFromDB();
-                }
-                else {
+                } else {
                     String type = expenseType[position];
                     typeWiseGetDataFromDB(type);
                 }
@@ -72,9 +75,6 @@ public class ExpenseShowFragment extends Fragment {
 
             }
         });
-
-        getDataFromDB();
-        configExpenseRV();
 
         addExpenseFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,11 +98,39 @@ public class ExpenseShowFragment extends Fragment {
             }
         });
 
+        filterBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //dateWiseFilteredDataFromDB(fromDateInMS,toDateInMS);
+            }
+        });
+
+        configExpenseRV();
+
         return view;
     }
 
+    private void dateWiseFilteredDataFromDB(long fromDateInMS, long toDateInMS) {
+        Cursor cursor1 = databaseHelper.showDataDateWise(fromDateInMS, toDateInMS);
+        expenseList.clear();
+
+        while (cursor1.moveToNext()) {
+            int id = Integer.parseInt(cursor1.getString(cursor1.getColumnIndex(databaseHelper.COL_id)));
+            String expenseType = cursor1.getString(cursor1.getColumnIndex(databaseHelper.COL_type));
+            long date = cursor1.getLong(cursor1.getColumnIndex(databaseHelper.COL_date));
+            String time = cursor1.getString(cursor1.getColumnIndex(databaseHelper.COL_time));
+            double amount = cursor1.getDouble(cursor1.getColumnIndex(databaseHelper.COL_amount));
+            String receipt = cursor1.getString(cursor1.getColumnIndex(databaseHelper.COL_receipt));
+            int receiptType = cursor1.getInt(cursor1.getColumnIndex(databaseHelper.COL_receipt_type));
+
+            Expense dateWiseExpenses = new Expense(id, expenseType, time, date, amount, receipt, receiptType);
+            expenseList.add(dateWiseExpenses);
+            dataAdapter.notifyDataSetChanged();
+        }
+    }
+
     private void spinnerLoad() {
-        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,R.layout.single_spinner_item);
+        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.expenseType, R.layout.single_spinner_item);
         expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
     }
 
@@ -115,15 +143,15 @@ public class ExpenseShowFragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int date) {
-                String toDate = date+" "+month+" "+year;
+                String toDate = date + " " + month + " " + year;
                 Calendar calendar1 = Calendar.getInstance();
-                calendar1.set(Calendar.YEAR,year);
-                calendar1.set(Calendar.MONTH,month);
-                calendar1.set(Calendar.DATE,date);
-                CharSequence charSequence = DateFormat.format("EEEE, dd MMM yyyy",calendar1);
+                calendar1.set(Calendar.YEAR, year);
+                calendar1.set(Calendar.MONTH, month);
+                calendar1.set(Calendar.DATE, date);
+                CharSequence charSequence = DateFormat.format("EEEE, dd MMM yyyy", calendar1);
                 toDateSetTV.setText(charSequence);
             }
-        },year,month,date);
+        }, year, month, date);
         datePickerDialog.show();
 
         String currentDate = year + "/" + month + "/" + date;
@@ -146,15 +174,15 @@ public class ExpenseShowFragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int date) {
-                String toDate = date+" "+month+" "+year;
+                String toDate = date + " " + month + " " + year;
                 Calendar calendar1 = Calendar.getInstance();
-                calendar1.set(Calendar.YEAR,year);
-                calendar1.set(Calendar.MONTH,month);
-                calendar1.set(Calendar.DATE,date);
-                CharSequence charSequence = DateFormat.format("EEEE, dd MMM yyyy",calendar1);
+                calendar1.set(Calendar.YEAR, year);
+                calendar1.set(Calendar.MONTH, month);
+                calendar1.set(Calendar.DATE, date);
+                CharSequence charSequence = DateFormat.format("EEEE, dd MMM yyyy", calendar1);
                 fromDateSetTV.setText(charSequence);
             }
-        },year,month,date);
+        }, year, month, date);
         datePickerDialog.show();
 
         String currentDate = year + "/" + month + "/" + date;
@@ -172,28 +200,26 @@ public class ExpenseShowFragment extends Fragment {
         Cursor currentCursor = databaseHelper.showAllData();
         expenseList.clear();
 
-        while(currentCursor.moveToNext())
-        {
-           int id = Integer.parseInt(currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_id)));
-           String type = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_type));
-           long date = currentCursor.getLong(currentCursor.getColumnIndex(databaseHelper.COL_date));
-           String time = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_time));
-           double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.COL_amount));
-           String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_receipt));
-           int receiptType = currentCursor.getInt(currentCursor.getColumnIndex(databaseHelper.COL_receipt_type));
+        while (currentCursor.moveToNext()) {
+            int id = Integer.parseInt(currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_id)));
+            String type = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_type));
+            long date = currentCursor.getLong(currentCursor.getColumnIndex(databaseHelper.COL_date));
+            String time = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_time));
+            double amount = currentCursor.getDouble(currentCursor.getColumnIndex(databaseHelper.COL_amount));
+            String receipt = currentCursor.getString(currentCursor.getColumnIndex(databaseHelper.COL_receipt));
+            int receiptType = currentCursor.getInt(currentCursor.getColumnIndex(databaseHelper.COL_receipt_type));
 
-           Expense expenses = new Expense(id,type,time,date,amount,receipt,receiptType);
-           expenseList.add(expenses);
-           dataAdapter.notifyDataSetChanged();
+            Expense allExpenses = new Expense(id, type, time, date, amount, receipt, receiptType);
+            expenseList.add(allExpenses);
+            dataAdapter.notifyDataSetChanged();
         }
     }
 
-    private void typeWiseGetDataFromDB(String type){
+    private void typeWiseGetDataFromDB(String type) {
         Cursor cursor = databaseHelper.showDataTypeWise(type);
         expenseList.clear();
 
-        while(cursor.moveToNext())
-        {
+        while (cursor.moveToNext()) {
             int id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(databaseHelper.COL_id)));
             String expenseType = cursor.getString(cursor.getColumnIndex(databaseHelper.COL_type));
             long date = cursor.getLong(cursor.getColumnIndex(databaseHelper.COL_date));
@@ -202,8 +228,8 @@ public class ExpenseShowFragment extends Fragment {
             String receipt = cursor.getString(cursor.getColumnIndex(databaseHelper.COL_receipt));
             int receiptType = cursor.getInt(cursor.getColumnIndex(databaseHelper.COL_receipt_type));
 
-            Expense expenses = new Expense(id,expenseType,time,date,amount,receipt,receiptType);
-            expenseList.add(expenses);
+            Expense typeWiseExpenses = new Expense(id, expenseType, time, date, amount, receipt, receiptType);
+            expenseList.add(typeWiseExpenses);
             dataAdapter.notifyDataSetChanged();
         }
     }
@@ -211,7 +237,6 @@ public class ExpenseShowFragment extends Fragment {
     private void configExpenseRV() {
         expenseRV.setLayoutManager(new LinearLayoutManager(getContext()));
         expenseRV.setAdapter(dataAdapter);
-        dataAdapter.notifyDataSetChanged();
     }
 
     private void init() {
@@ -222,10 +247,12 @@ public class ExpenseShowFragment extends Fragment {
         fromDateSetTV = view.findViewById(R.id.fromDateSetTV);
         toDateSetTV = view.findViewById(R.id.toDateSetTV);
         expenseRV = view.findViewById(R.id.expenseListRV);
+        filterBTN = view.findViewById(R.id.expenseFilterBTN);
 
         expenseList = new ArrayList<>();
+        newExpenseList = new ArrayList<>();
         databaseHelper = new DatabaseHelper(getContext());
-        dataAdapter = new DataAdapter(databaseHelper,expenseList,getContext());
+        dataAdapter = new DataAdapter(databaseHelper, expenseList, getContext());
     }
 
 }

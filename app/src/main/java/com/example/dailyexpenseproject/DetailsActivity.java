@@ -57,7 +57,7 @@ public class DetailsActivity extends AppCompatActivity {
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
-
+                        dialogInterface.dismiss();
                     }
                 });
 
@@ -80,7 +80,7 @@ public class DetailsActivity extends AppCompatActivity {
         receipt = getIntent().getStringExtra("receipt");
         receiptType = getIntent().getIntExtra("receiptType",0);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd, yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         String dateString = formatter.format(new Date(date));
 
         if(receiptType==1){
@@ -177,8 +177,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    public static Bitmap decodeBase64(String input)
-    {
+    public static Bitmap decodeBase64(String input){
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }

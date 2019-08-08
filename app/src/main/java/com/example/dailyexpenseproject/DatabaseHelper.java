@@ -53,6 +53,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor1;
     }
 
+    public Cursor showDataDateWise(long fromDate,long toDate){
+        String show_date_wise_data = "select * from Expense where expenseDate between '"+fromDate+"' and '"+toDate+"'";
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor2 = sqLiteDatabase.rawQuery(show_date_wise_data,null);
+
+        return cursor2;
+    }
+
     public void insert(String type,long date,String time,double amount,String receipt,int receiptType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_type,type);

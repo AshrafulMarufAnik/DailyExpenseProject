@@ -164,6 +164,20 @@
 
                     </LinearLayout>
 
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@drawable/custom_button_design"
+                        android:id="@+id/dashboardFilterBTN"
+                        android:text="Filter By Date"
+                        android:textStyle="normal"
+                        android:textSize="12sp"
+                        android:textAllCaps="false"
+                        android:layout_marginLeft="100dp"
+                        android:layout_marginRight="100dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="10dp"/>
+
                 </LinearLayout>
 
             </RelativeLayout>
@@ -197,6 +211,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1.5dp"
+                    android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
                     android:weightSum="2"
                     android:orientation="horizontal">
@@ -227,6 +242,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1.5dp"
+                    android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
                     android:weightSum="2"
                     android:orientation="horizontal">
@@ -257,6 +273,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1.5dp"
+                    android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
                     android:weightSum="2"
                     android:orientation="horizontal">
