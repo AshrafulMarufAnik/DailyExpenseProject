@@ -102,7 +102,7 @@ public class ExpenseShowFragment extends Fragment {
     }
 
     private void spinnerLoad() {
-        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,android.R.layout.simple_spinner_item);
+        ArrayAdapter expenseTypeArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.expenseType,R.layout.single_spinner_item);
         expenseTypeSpinner.setAdapter(expenseTypeArrayAdapter);
     }
 
