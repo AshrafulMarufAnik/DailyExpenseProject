@@ -190,7 +190,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                 } else if (optionItems[i].equals("Gallery")) {
                     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent, "Select Source"), select_file);
+                    startActivityForResult(intent, select_file);
                 }
 
             }
